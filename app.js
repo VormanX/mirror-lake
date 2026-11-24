@@ -116,19 +116,36 @@ function ramp(param, to, sec) {
   gainState.set(param, { v0: from, v1: to, t0: t, t1: t + sec });
 }
 function partEnd(i, el) { return PARTS[i][1] ?? (el.duration || 1e9); }
+let crossToken = 0;
 function crossTo(i) {
   if (!actx || !PARTS[i]) return;
-  const from = players[active], to = players[1 - active];
+  const from = players[active], to = players[1 - active], token = ++crossToken;
   active = 1 - active; swapAt = performance.now();
-  const go = () => {
-    if (curGain(to.gain.gain) > .001) setGain(to.gain.gain, 0);
-    to.el._wanted = true; to.el.currentTime = PARTS[i][0];
-    to.el.play().catch(() => {});
+  let started = false;
+  // наложение начинается, только когда новая часть реально зазвучала (на телефоне её может понадобиться догрузить)
+  const start = () => {
+    if (started || token !== crossToken) return; started = true;
+    swapAt = performance.now();
     ramp(to.gain.gain, PARTS[i][2], XF);
+    from.el._wanted = false; ramp(from.gain.gain, 0, XF);
+    setTimeout(() => {
+      if (players[active] === from) return;
+      from.el.pause();
+      // пока плеер молчит, заранее встаём на начало следующей части, чтобы она успела загрузиться
+      const nxt = PARTS[Math.min(curPart + 1, PARTS.length - 1)][0];
+      try { from.el.currentTime = nxt; } catch (e) {}
+    }, XF * 1000 + 200);
+  };
+  const go = () => {
+    if (token !== crossToken) return;
+    if (curGain(to.gain.gain) > .001) setGain(to.gain.gain, 0);
+    to.el._wanted = true;
+    if (Math.abs(to.el.currentTime - PARTS[i][0]) > .25) to.el.currentTime = PARTS[i][0];
+    to.el.addEventListener("playing", start, { once: true });
+    to.el.play().then(() => { if (!to.el.seeking && to.el.readyState >= 3) start(); }).catch(() => {});
+    setTimeout(start, 4000);          // запасной вариант, если событие не пришло
   };
   to.el.readyState >= 1 ? go() : to.el.addEventListener("loadedmetadata", go, { once: true });
-  from.el._wanted = false; ramp(from.gain.gain, 0, XF);
-  setTimeout(() => { if (players[active] !== from) from.el.pause(); }, XF * 1000 + 200);
 }
 function musicTick() {               // часть подходит к концу, а глава ещё идёт — начинаем её заново
   if (curPart < 0 || performance.now() - swapAt < XF * 1000 + 500) return;
