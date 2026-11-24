@@ -87,19 +87,33 @@ let actx = null, master = null, players = [], active = 0, curPart = -1, ducked =
 function initMusic() {               // вызывается по первому нажатию — это требование браузеров
   if (actx || !C.music) return;
   actx = new (window.AudioContext || window.webkitAudioContext)();
-  master = actx.createGain(); master.gain.value = soundOn ? MUSIC_VOL : 0; master.connect(actx.destination);
+  master = actx.createGain(); setGain(master.gain, soundOn ? MUSIC_VOL : 0); master.connect(actx.destination);
   players = [0, 1].map(() => {
     const el = new Audio(C.music.file); el.preload = "auto";
-    const gain = actx.createGain(); gain.gain.value = 0;
+    const gain = actx.createGain(); setGain(gain.gain, 0);
     actx.createMediaElementSource(el).connect(gain); gain.connect(master);
     el.play().then(() => { if (!el._wanted) el.pause(); }).catch(() => {});   // «разблокировать» оба плеера сразу
     return { el, gain };
   });
   setInterval(musicTick, 250);
 }
+// Громкость отслеживаем сами: Safari (iPhone, Телеграм) во время плавного изменения
+// отдаёт неверное текущее значение, и наложения обрывались бы рывком.
+const gainState = new WeakMap();
+function curGain(param) {
+  const g = gainState.get(param); if (!g) return 0;
+  const t = actx.currentTime;
+  if (t >= g.t1) return g.v1;
+  return g.v0 + (g.v1 - g.v0) * Math.max(0, (t - g.t0) / (g.t1 - g.t0));
+}
+function setGain(param, v) {
+  const t = actx.currentTime; param.cancelScheduledValues(t); param.setValueAtTime(v, t);
+  gainState.set(param, { v0: v, v1: v, t0: t, t1: t });
+}
 function ramp(param, to, sec) {
-  const t = actx.currentTime; param.cancelScheduledValues(t);
-  param.setValueAtTime(param.value, t); param.linearRampToValueAtTime(to, t + sec);
+  const t = actx.currentTime, from = curGain(param);
+  param.cancelScheduledValues(t); param.setValueAtTime(from, t); param.linearRampToValueAtTime(to, t + sec);
+  gainState.set(param, { v0: from, v1: to, t0: t, t1: t + sec });
 }
 function partEnd(i, el) { return PARTS[i][1] ?? (el.duration || 1e9); }
 function crossTo(i) {
@@ -107,7 +121,7 @@ function crossTo(i) {
   const from = players[active], to = players[1 - active];
   active = 1 - active; swapAt = performance.now();
   const go = () => {
-    to.gain.gain.cancelScheduledValues(actx.currentTime); to.gain.gain.setValueAtTime(0, actx.currentTime);
+    if (curGain(to.gain.gain) > .001) setGain(to.gain.gain, 0);
     to.el._wanted = true; to.el.currentTime = PARTS[i][0];
     to.el.play().catch(() => {});
     ramp(to.gain.gain, PARTS[i][2], XF);
