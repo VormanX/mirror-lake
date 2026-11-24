@@ -107,6 +107,7 @@ function crossTo(i) {
   const from = players[active], to = players[1 - active];
   active = 1 - active; swapAt = performance.now();
   const go = () => {
+    to.gain.gain.cancelScheduledValues(actx.currentTime); to.gain.gain.setValueAtTime(0, actx.currentTime);
     to.el._wanted = true; to.el.currentTime = PARTS[i][0];
     to.el.play().catch(() => {});
     ramp(to.gain.gain, PARTS[i][2], XF);
@@ -126,7 +127,13 @@ function setMusic(part) {
   curPart = part; crossTo(part);
 }
 function musicLevel() { return soundOn ? MUSIC_VOL * (ducked ? DUCK : 1) : 0; }
-function duck(on) { ducked = on; if (master) ramp(master.gain, musicLevel(), .6); }
+let unduckTimer = 0;
+function duck(on) {               // под голос — быстро тише; после голоса — с паузой и медленно громче
+  ducked = on; clearTimeout(unduckTimer);
+  if (!master) return;
+  if (on) ramp(master.gain, musicLevel(), .5);
+  else unduckTimer = setTimeout(() => ramp(master.gain, musicLevel(), 2.5), 1800);
+}
 const chapter = p => C.music ? C.music.pages[p] : 0;
 
 $("#soundBtn").onclick = e => {
