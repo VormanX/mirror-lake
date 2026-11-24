@@ -54,7 +54,8 @@ h1{font-family:var(--script);font-weight:400;font-size:clamp(40px,11vw,72px);lin
 .progress i{width:18px;height:3px;border-radius:2px;background:rgba(203,188,255,.25);transition:background .5s}
 .progress i.done{background:var(--lilac);box-shadow:0 0 6px var(--glow)}
 .controls{display:flex;gap:6px}
-.controls button{width:36px;height:36px;border-radius:50%;font-size:17px;opacity:.45;border:1px solid rgba(203,188,255,.3);transition:.3s}
+.controls button{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;opacity:.45;border:1px solid rgba(203,188,255,.3);transition:.3s}
+.controls svg{width:16px;height:16px;display:block}
 .controls button.on{opacity:1;box-shadow:0 0 10px rgba(143,123,255,.5);background:rgba(143,123,255,.15)}
 
 #stage{position:relative;flex:1;width:100%;overflow:hidden}

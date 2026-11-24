@@ -194,7 +194,8 @@ function startPrologue() {
   prologueReady = false;
   words.forEach((w, i) => setTimeout(() => w.classList.add("in"), 700 + i * 140));
   setTimeout(() => prologueReady = true, 700 + words.length * 140);
-  onVoiceDone = null;
+  // при автопрокрутке после вступления сказка начинается сама
+  onVoiceDone = () => { if (autoOn && $("#prologue").classList.contains("active")) { prologueReady = true; startReader(0); } };
   playVoice("intro", C.intro);
 }
 $("#prologue").onclick = () => {
@@ -204,7 +205,7 @@ $("#prologue").onclick = () => {
 };
 
 /* =================== ЧИТАЛКА =================== */
-let zoomOn = true, autoOn = false;
+let zoomOn = true, autoOn = true;   // автопрокрутка включена сразу
 let steps = [], cur = -1, curPage = -1, busy = false;
 const stage = $("#stage"), cam = $("#cam"), pageEl = $("#page"), img = $("#pageImg"), coversEl = $("#covers"), cap = $("#captionText");
 let covers = [], pageW = 0, pageH = 0;
@@ -327,7 +328,7 @@ function startReader(i) {
   if ($("#reader").classList.contains("active")) return;
   show("reader"); curPage = -1; cur = -1;
   requestAnimationFrame(() => { layout(); goto(i); });
-  if (!sessionStorage.hinted) { sessionStorage.hinted = 1; toast("Касайся экрана, чтобы открывать кадры.\nСлева – шаг назад."); }
+  if (!sessionStorage.hinted) { sessionStorage.hinted = 1; toast("Сказка листается сама.\nТап – дальше, слева – назад, пауза – наверху."); }
 }
 
 // управление: тап справа/по центру — дальше, по левой трети — назад, свайпы, клавиши
@@ -350,9 +351,10 @@ addEventListener("keydown", e => {
   if (e.key === "ArrowLeft") prev();
 });
 
+const ICON_PAUSE = '<svg viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>', ICON_PLAY = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
 $("#autoBtn").onclick = e => {
   e.stopPropagation(); autoOn = !autoOn;
-  e.currentTarget.classList.toggle("on", autoOn); e.currentTarget.textContent = autoOn ? "❚❚" : "▶";
+  e.currentTarget.classList.toggle("on", autoOn); e.currentTarget.innerHTML = autoOn ? ICON_PAUSE : ICON_PLAY;
   toast(autoOn ? "Автопрокрутка: сказка листается сама" : "Автопрокрутка выключена");
   if (autoOn && !busy && voice.paused) next();
 };
