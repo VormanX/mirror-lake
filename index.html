@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0a24">
+<title>Принцесса Зеркального озера</title>
+<meta property="og:title" content="Принцесса Зеркального озера">
+<meta property="og:description" content="Сказка ко дню рождения ✨">
+<meta property="og:image" content="https://vormanx.github.io/mirror-lake/pages/cover.jpg">
+<meta property="og:url" content="https://vormanx.github.io/mirror-lake/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="sky"></canvas>
+
+<!-- Обложка -->
+<section id="intro" class="screen active">
+  <div class="moon"></div>
+  <div class="intro-text">
+    <p class="subtitle" data-t="subtitle"></p>
+    <h1 data-t="title"></h1>
+    <button id="openBtn" class="glow-btn" data-t="openButton"></button>
+    <p class="hint">🎧 со звуком – волшебнее</p>
+  </div>
+</section>
+
+<!-- Пролог -->
+<section id="prologue" class="screen">
+  <p class="story-text" id="prologueText"></p>
+  <p class="tap-hint">коснись экрана, чтобы продолжить</p>
+</section>
+
+<!-- Комикс -->
+<section id="reader" class="screen">
+  <div class="topbar">
+    <div class="progress" id="progress"></div>
+    <div class="controls">
+      <button id="autoBtn" title="Автопрокрутка">▶</button>
+      <button id="zoomBtn" title="Приближать кадры" class="on">⤢</button>
+      <button id="soundBtn" title="Звук" class="on">♪</button>
+    </div>
+  </div>
+  <div id="stage">
+    <div id="cam">
+      <div id="page">
+        <img id="pageImg" alt="">
+        <div id="covers"></div>
+      </div>
+    </div>
+  </div>
+  <div id="caption"><p id="captionText"></p></div>
+</section>
+
+<!-- Эпилог -->
+<section id="epilogue" class="screen">
+  <p class="label">Эпилог</p>
+  <div id="epilogueLines"></div>
+  <button id="toFinale" class="glow-btn hidden">Дальше ✨</button>
+</section>
+
+<!-- Финал: поздравление, факты, игра -->
+<section id="finale" class="screen scroll">
+  <div class="block">
+    <h2 class="bday" data-t="greetingTitle"></h2>
+    <div class="cake" id="cake">
+      <div class="candles">
+        <div class="candle"><span class="flame"></span></div>
+        <div class="candle"><span class="flame"></span></div>
+        <div class="candle"><span class="flame"></span></div>
+      </div>
+      <div class="tier t2"></div>
+      <div class="tier t1"></div>
+    </div>
+    <p class="hint" id="cakeHint">Загадай желание и задуй свечи – коснись огоньков</p>
+  </div>
+
+  <div class="block letter" id="letter"></div>
+
+
+  <div class="block">
+    <h3 data-t="gameTitle"></h3>
+    <p class="hint"><span data-t="gameHint"></span> · <b id="caught">0</b> / <span id="need"></span></p>
+    <div id="meadow"></div>
+  </div>
+
+  <div class="block end">
+    <img src="pages/feather.webp" class="feather" alt="">
+    <button id="reread" class="glow-btn" data-t="rereadButton"></button>
+    <p class="credits">Голос рассказчика – ElevenLabs</p>
+  </div>
+</section>
+
+<div id="modal" class="hidden"><div class="modal-card"><p id="modalText"></p><button class="glow-btn" id="modalClose">✨</button></div></div>
+
+<script src="content.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
