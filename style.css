@@ -73,10 +73,6 @@ h1{font-family:var(--script);font-weight:400;font-size:clamp(40px,11vw,72px);lin
   -webkit-mask-image:radial-gradient(circle at 50% 50%,transparent var(--r),#000 calc(var(--r) + 25%));
           mask-image:radial-gradient(circle at 50% 50%,transparent var(--r),#000 calc(var(--r) + 25%));
   transition:--r 1.6s cubic-bezier(.5,0,.3,1),opacity 1.6s ease}
-.cover::after{content:"";position:absolute;inset:-50%;
-  background:linear-gradient(115deg,transparent 40%,rgba(200,185,255,.35) 50%,transparent 60%);
-  animation:sheen 4.5s ease-in-out infinite}
-@keyframes sheen{from{transform:translateX(-40%)}to{transform:translateX(40%)}}
 .cover.open{--r:160%;opacity:0;pointer-events:none}
 .cover.instant{transition:none}
 
