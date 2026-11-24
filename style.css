@@ -110,11 +110,11 @@ h3{font-family:var(--script);font-weight:400;font-size:36px;color:var(--lilac);m
   box-shadow:0 0 30px rgba(143,123,255,.4)}
 .t2{width:130px;height:46px}.t1{width:190px;height:58px}
 
-.letter{margin:10px 18px;width:calc(100% - 36px);text-align:left;border-radius:18px;padding:30px 26px;
+.letter{margin:10px 18px;width:calc(100% - 36px);text-align:left;border-radius:18px;padding:24px 20px;
   background:linear-gradient(160deg,rgba(40,33,100,.7),rgba(20,17,55,.75));border:1px solid rgba(203,188,255,.3);
-  box-shadow:0 0 40px rgba(110,90,230,.3);font-size:21px;line-height:1.6}
-.letter p+p{margin-top:14px}
-.letter .sign{font-family:var(--script);font-size:30px;text-align:right;color:var(--lilac);margin-top:20px}
+  box-shadow:0 0 40px rgba(110,90,230,.3);font-size:clamp(16px,4.3vw,19px);line-height:1.55}
+.letter p+p{margin-top:12px}
+.letter .sign{font-family:var(--script);font-size:26px;text-align:right;color:var(--lilac);margin-top:20px}
 
 .facts{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
 .fact{perspective:800px;height:170px;cursor:pointer}

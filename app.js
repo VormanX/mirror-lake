@@ -363,7 +363,9 @@ function startFinale() {
 
 // письмо: последний пункт — подпись
 const gr = C.greeting;
-$("#letter").innerHTML = gr.slice(0, -1).map(t => `<p>${t}</p>`).join("") + `<p class="sign">${gr[gr.length - 1]}</p>`;
+const isGift = new URLSearchParams(location.search).get("g") === C.giftKey;
+if (!isGift) $("#letter").remove();
+else $("#letter").innerHTML = gr.slice(0, -1).map(t => `<p>${t}</p>`).join("") + `<p class="sign">${gr[gr.length - 1]}</p>`;
 
 // торт
 const candles = [...document.querySelectorAll(".candle")];
