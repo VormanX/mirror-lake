@@ -183,17 +183,23 @@ buildSteps();
 $("#progress").innerHTML = PANELS.map(() => "<i></i>").join("");
 
 function layout() {
+  // страница рассчитывается на всю высоту под верхней панелью: на общем плане подписи нет
   const W = stage.clientWidth, H = stage.clientHeight;
-  pageW = Math.min(W * .96, H * .96 * ASPECT); pageH = pageW / ASPECT;
+  pageW = Math.min(W * .94, H * .94 * ASPECT); pageH = pageW / ASPECT;
   pageEl.style.width = pageW + "px"; pageEl.style.height = pageH + "px";
 }
 function camTo(k, instant) {
-  const W = stage.clientWidth, H = stage.clientHeight;
-  let s = 1, tx = (W - pageW) / 2, ty = (H - pageH) / 2;
+  const W = stage.clientWidth, Hfull = stage.clientHeight;
+  // когда показана подпись, кадр не должен уходить под неё
+  const H = k >= 0 ? Hfull - $("#caption").offsetHeight : Hfull;
+  let s, tx, ty;
   if (zoomOn && k >= 0) {
     const [x, y, w, h] = PANELS[curPage][k].map((v, i) => v / 100 * (i % 2 ? pageH : pageW));
-    s = Math.max(1, Math.min(W * .96 / w, H * .96 / h, 3));
+    s = Math.max(.5, Math.min(W * .96 / w, H * .94 / h, 3));
     tx = W / 2 - (x + w / 2) * s; ty = H / 2 - (y + h / 2) * s;
+  } else {
+    s = Math.min(1, W * .94 / pageW, H * .94 / pageH);
+    tx = (W - pageW * s) / 2; ty = (H - pageH * s) / 2;
   }
   if (instant) { cam.style.transition = "none"; requestAnimationFrame(() => requestAnimationFrame(() => cam.style.transition = "")); }
   cam.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
