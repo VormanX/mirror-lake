@@ -79,9 +79,9 @@ function stopVoice() { voice.pause(); clearTimeout(voiceTimer); duck(false); }
    Части и привязка к страницам — в content.js (music). Если глава длиннее части,
    часть плавно начинается заново; если читатель ушёл дальше — плавный переход
    на следующую часть. Всё через Web Audio, чтобы наложения работали и на iPhone. */
-const MUSIC_VOL = .4, DUCK = .4, XF = 3.5;            // громкость, приглушение под голос, длина наложения (сек)
+const MUSIC_VOL = .4, DUCK = .3, XF = 3.5;            // громкость, приглушение под голос, длина наложения (сек)
 const toSec = t => t == null ? null : typeof t === "number" ? t : t.split(":").reduce((m, x) => m * 60 + +x, 0);
-const PARTS = (C.music && C.music.parts || []).map(([a, b]) => [toSec(a), toSec(b)]);
+const PARTS = (C.music && C.music.parts || []).map(([a, b, v]) => [toSec(a), toSec(b), v ?? 1]);
 let actx = null, master = null, players = [], active = 0, curPart = -1, ducked = false, swapAt = 0;
 
 function initMusic() {               // вызывается по первому нажатию — это требование браузеров
@@ -109,7 +109,7 @@ function crossTo(i) {
   const go = () => {
     to.el._wanted = true; to.el.currentTime = PARTS[i][0];
     to.el.play().catch(() => {});
-    ramp(to.gain.gain, 1, XF);
+    ramp(to.gain.gain, PARTS[i][2], XF);
   };
   to.el.readyState >= 1 ? go() : to.el.addEventListener("loadedmetadata", go, { once: true });
   from.el._wanted = false; ramp(from.gain.gain, 0, XF);
