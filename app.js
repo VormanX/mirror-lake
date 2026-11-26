@@ -254,7 +254,18 @@ function makeCovers(p) {
     const d = document.createElement("div");
     d.className = "cover instant";
     // небольшой запас, чтобы не было щелей на стыках
-    Object.assign(d.style, { left: x - .3 + "%", top: y - .3 + "%", width: w + .6 + "%", height: h + .6 + "%" });
+    const cx = x - .3, cy = y - .3, cw = w + .6, ch = h + .6;
+    Object.assign(d.style, { left: cx + "%", top: cy + "%", width: cw + "%", height: ch + "%" });
+    // «матовое стекло»: заранее размытая копия страницы, выставленная ровно под кадр.
+    // Размывается один раз и дальше только движется с камерой — поэтому не дрожит.
+    const g = document.createElement("div");
+    g.className = "glass";
+    Object.assign(g.style, {
+      backgroundImage: `url(${pageSrc(p)})`,
+      width: 1e4 / cw + "%", height: 1e4 / ch + "%",
+      left: -cx * 100 / cw + "%", top: -cy * 100 / ch + "%"
+    });
+    d.appendChild(g);
     coversEl.appendChild(d);
     return d;
   });
