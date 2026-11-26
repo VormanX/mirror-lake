@@ -425,12 +425,16 @@ candles.forEach(c => c.onclick = () => {
 });
 
 // игра с бабочками
-const BFLY = `<svg viewBox="-22 -19 44 38"><g class="wl"><path d="M0 0 C-8 -18,-24 -20,-20 -6 C-18 2,-8 2,0 0 Z" fill="rgba(230,220,255,.85)" stroke="#fff" stroke-width=".8"/><path d="M0 0 C-10 4,-18 14,-10 16 C-4 17,-1 8,0 0 Z" fill="rgba(200,185,255,.8)" stroke="#fff" stroke-width=".8"/></g><g class="wr"><path d="M0 0 C8 -18,24 -20,20 -6 C18 2,8 2,0 0 Z" fill="rgba(230,220,255,.85)" stroke="#fff" stroke-width=".8"/><path d="M0 0 C10 4,18 14,10 16 C4 17,1 8,0 0 Z" fill="rgba(200,185,255,.8)" stroke="#fff" stroke-width=".8"/></g><ellipse rx="1.6" ry="9" fill="#fff"/></svg>`;
+const BFLY = `<svg viewBox="-30 -30 60 60"><defs><radialGradient id="bflyGlow"><stop offset="0" stop-color="rgb(215,200,255)" stop-opacity=".55"/><stop offset="1" stop-color="rgb(215,200,255)" stop-opacity="0"/></radialGradient></defs>`
+  + `<circle r="28" fill="url(#bflyGlow)"/>`   // мягкое круглое свечение (вместо фильтра, который на телефонах давал квадрат)
+  + `<g class="wl"><path d="M0 0 C-8 -18,-24 -20,-20 -6 C-18 2,-8 2,0 0 Z" fill="rgba(230,220,255,.9)" stroke="#fff" stroke-width=".8"/><path d="M0 0 C-10 4,-18 14,-10 16 C-4 17,-1 8,0 0 Z" fill="rgba(200,185,255,.85)" stroke="#fff" stroke-width=".8"/></g>`
+  + `<g class="wr"><path d="M0 0 C8 -18,24 -20,20 -6 C18 2,8 2,0 0 Z" fill="rgba(230,220,255,.9)" stroke="#fff" stroke-width=".8"/><path d="M0 0 C10 4,18 14,10 16 C4 17,1 8,0 0 Z" fill="rgba(200,185,255,.85)" stroke="#fff" stroke-width=".8"/></g>`
+  + `<ellipse rx="1.8" ry="9" fill="#fff"/><path d="M0 -8 C-2 -13,-4 -15,-6 -16 M0 -8 C2 -13,4 -15,6 -16" stroke="#fff" stroke-width=".7" fill="none"/></svg>`;
 const meadow = $("#meadow"); let caught = 0, gameOn = false;
 $("#need").textContent = C.gameCount;
 function spawnBfly() {
   const b = document.createElement("div"); b.className = "bfly"; b.innerHTML = BFLY;
-  const move = () => { b.style.left = Math.random() * (meadow.clientWidth - 44) + "px"; b.style.top = Math.random() * (meadow.clientHeight - 38) + "px"; };
+  const move = () => { b.style.left = Math.random() * (meadow.clientWidth - 56) + "px"; b.style.top = Math.random() * (meadow.clientHeight - 56) + "px"; };
   move(); meadow.appendChild(b);
   const iv = setInterval(move, 2200 + Math.random() * 1500);
   b.onclick = e => {

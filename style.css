@@ -131,12 +131,12 @@ h3{font-family:var(--script);font-weight:400;font-size:36px;color:var(--lilac);m
 
 #meadow{position:relative;width:100%;height:300px;margin-top:10px;border-radius:18px;overflow:hidden;
   background:radial-gradient(ellipse at 50% 110%,rgba(143,123,255,.25),transparent 70%);border:1px solid rgba(203,188,255,.15)}
-.bfly{position:absolute;width:44px;height:38px;cursor:pointer;transition:left 3s ease-in-out,top 3s ease-in-out;filter:drop-shadow(0 0 8px rgba(210,195,255,.9))}
+.bfly{position:absolute;width:56px;height:56px;cursor:pointer;transition:left 3s ease-in-out,top 3s ease-in-out}
 .bfly svg{width:100%;height:100%;overflow:visible}
-.bfly .wl{transform-origin:50% 50%;animation:flapL .35s ease-in-out infinite alternate}
-.bfly .wr{transform-origin:50% 50%;animation:flapR .35s ease-in-out infinite alternate}
-@keyframes flapL{to{transform:scaleX(.35)}}
-@keyframes flapR{to{transform:scaleX(.35)}}
+/* каждое крыло складывается к телу: точка крепления – край крыла у тела */
+.bfly .wl{transform-box:fill-box;transform-origin:100% 50%;animation:flap .35s ease-in-out infinite alternate}
+.bfly .wr{transform-box:fill-box;transform-origin:0% 50%;animation:flap .35s ease-in-out infinite alternate}
+@keyframes flap{to{transform:scaleX(.3)}}
 .bfly.caught{transition:transform .6s,opacity .6s;transform:scale(2);opacity:0}
 
 .end{padding-bottom:80px}
